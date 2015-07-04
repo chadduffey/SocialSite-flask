@@ -1,4 +1,4 @@
-from flask import (Flask, g, render_template, flash, redirect, url_for)
+from flask import Flask, g, render_template, flash, redirect, url_for
 from flask.ext.bcrypt import check_password_hash
 from flask.ext.login import (LoginManager, login_user, logout_user, 
 							login_required, current_user)
@@ -73,13 +73,77 @@ def login():
 def logout():
 	logout_user()
 	flash("You have been logged out", "success")
-	return redirect(url_for('login'))
+	return redirect(url_for('index'))
 
+@app.route('/new_post', methods=('GET', 'POST'))
+@login_required
+def post():
+	form = forms.PostForm()
+	if form.validate_on_submit():
+		models.Post.create(user=g.user._get_current_object(), 
+							content=form.content.data.strip())
+		flash("Update posted!", "success")
+		return redirect(url_for('index'))
+	return render_template('post.html', form=form)
 
 @app.route('/')
 @login_required
 def index():
-	return 'You are logged in'
+	stream = models.Post.select().limit(100)
+	return render_template('stream.html', stream=stream)
+
+@app.route('/stream')
+@app.route('/stream/<username>')
+def stream(username=None):
+	template= 'stream.html'
+	if username and username != current_user.username:
+		user = models.User.select().where(models.User.username**username).get()
+		stream = user.posts.limit(100)
+	else:
+		stream = current_user.get_stream().limit(100)
+		user = current_user
+
+	if username:
+		template = 'user_stream.html'
+	return render_template(template, stream=stream, user=user)
+
+@app.route('/follow/<username>')
+@login_required
+def follow(username):
+	try:
+		to_user = models.User.get(models.User.username**username)
+	except models.DoesNotExist:
+		pass
+	else:
+		try:
+			models.Relationship.create(
+				from_user=g.user._get_current_object(),
+				to_user=to_user
+			)
+		except models.IntegrityError:
+			pass
+		else:
+			flash("You are now following {}".format(to_user.username), "success")
+	return redirect(url_for('stream', username=to_user.username))
+
+@app.route('/unfollow/<username>')
+@login_required
+def unfollow(username):
+	try:
+		to_user = models.User.get(models.User.username**username)
+	except models.DoesNotExist:
+		pass
+	else:
+		try:
+			models.Relationship.get(
+				from_user=g.user._get_current_object(),
+				to_user=to_user
+			).delete_instance()
+		except models.IntegrityError:
+			pass
+		else:
+			flash("You've stopped following {}".format(to_user.username), "success")
+	return redirect(url_for('stream', username=to_user.username))
 
 if __name__ == '__main__':
 	models.initialize()
@@ -88,8 +152,8 @@ if __name__ == '__main__':
 			username='chadduffey',
 			email='chadduffey@hotmail.com',
 			password='password',
-			admin=True)
+			admin=True
+		)
 	except ValueError:
 		pass
-
 	app.run(debug=DEBUG, host=HOST, port=PORT)
