@@ -58,7 +58,7 @@ header {
 .icon-logo {
   width: 30px;
   height: 30px;
-  background: url('../img/icon-profile.svg') center no-repeat;
+  background: url('../img/home.png') center no-repeat;
   background-size: 22px 22px;
   display: block;
   float: left;
@@ -66,7 +66,7 @@ header {
 .icon-profile {
   width: 30px;
   height: 30px;
-  background: url('../img/icon-profile.svg') center no-repeat;
+  background: url('../img/home.png') center no-repeat;
   background-size: 20px 20px;
   display: block;
   float: right;
@@ -75,7 +75,7 @@ header {
 .icon-power {
   width: 30px;
   height: 30px;
-  background: url('../img/icon-power.svg') center no-repeat;
+  background: url('../img/logout.png') center no-repeat;
   background-size: 20px 20px;
   display: block;
   float: right;
@@ -106,11 +106,11 @@ nav a {
 nav a.new {
   float: right;
   text-transform: uppercase;
-  color: #FFB770;
+  color: #8BD7F8;
 }
 nav a.current {
-  color: #FFB770;
-  border-bottom: 2px solid #FFB770;
+  color: #8BD7F8;
+  border-bottom: 2px solid #8BD7F8;
 }
 article {
   border-bottom: 2px solid #ECEEEF;
@@ -126,6 +126,14 @@ article p {
 time {
   font-size: .875em;
   opacity: .8;
+}
+
+.centeredImage
+{
+  text-align:center;
+  margin-top:0px;
+  margin-bottom:0px;
+  padding:20px;
 }
 
 /*Form Elements*/
@@ -233,8 +241,8 @@ button.small {
   color: #fff;
 }
 .success {
-  background: #70DA8B;
-  color: #4DA463;
+  background: #8BD7F8;
+  color: #FFF;
 }
 .error {
   background: #FFE6B2;

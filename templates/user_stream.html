@@ -18,18 +18,18 @@
 			<h5>Following</h5>
 			<p>{{ user.following().count() }}</p>
 		</div>
-		<div class="grid-25">
-			<!--follow unfollow button -->
-			{% if current_user.is_authenticated() %}
-				{% if user != current_user %}
-					{% if not user in current_user.following() %}
-						<a href="{{ url_for('follow', username=user.username) }}" class="small">Follow</a>
-					{% else %}
-						<a href="{{ url_for('unfollow', username=user.username) }}" class="small">Unfollow</a>	
-					{% endif %}
+	</div>
+	<div class="grid-25">
+		<!--follow unfollow button -->
+		{% if current_user.is_authenticated() %}
+			{% if user != current_user %}
+				{% if not user in current_user.following() %}
+					<a href="{{ url_for('follow', username=user.username) }}" class="small">Follow</a>
+				{% else %}
+					<a href="{{ url_for('unfollow', username=user.username) }}" class="small">Unfollow</a>	
 				{% endif %}
 			{% endif %}
-		</div>
+		{% endif %}
 	</div>
 </div>
 

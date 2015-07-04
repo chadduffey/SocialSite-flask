@@ -23,6 +23,7 @@ class User(UserMixin, Model):
 
 	def get_stream(self):
 		return Post.select().where(
+			(Post.user << self.following() ) |
 			(Post.user == self)
 		)
 
